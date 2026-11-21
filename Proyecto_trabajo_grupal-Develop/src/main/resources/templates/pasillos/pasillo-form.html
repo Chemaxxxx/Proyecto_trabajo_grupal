@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- Carga la cabecera común y establece el título de la página. -->
+<head th:replace="fragments/head :: head (#{msg.pasillo.form.title})"></head>
+
+<body>
+
+<!-- Cabecera común de la aplicación. -->
+<header th:replace="fragments/header :: header"></header>
+
+<!-- Contenido principal de la página. -->
+<main class="container mt-5">
+
+    <!-- Muestra un título diferente dependiendo de si se crea o edita un pasillo. -->
+    <h1 th:text="${pasillo.id == null} ? #{msg.pasillo.form.add} : #{msg.pasillo.form.edit}"></h1>
+
+    <!-- Muestra un mensaje de error si existe alguno. -->
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <!-- Formulario para crear o actualizar un pasillo.
+         La dirección cambia dependiendo de si el pasillo tiene ID. -->
+    <form th:action="${pasillo.id == null} ? @{/pasillos/insert} : @{/pasillos/update}"
+          th:object="${pasillo}"
+          method="post"
+          class="mt-4">
+
+        <!-- Campo oculto para conservar el identificador del pasillo al editarlo. -->
+        <input type="hidden" th:field="*{id}" />
+
+        <!-- Campo para introducir el número del pasillo. -->
+        <div class="mb-3">
+            <label for="numero" class="form-label" th:text="#{msg.pasillo.form.numero}">Número:</label>
+            <input type="number" th:field="*{numero}" id="numero" class="form-control" min="1" />
+
+            <!-- Muestra los errores de validación del número del pasillo. -->
+            <div th:if="${#fields.hasErrors('numero')}" class="text-danger" th:errors="*{numero}"></div>
+        </div>
+
+        <!-- Desplegable para seleccionar el almacén al que pertenece el pasillo. -->
+        <div class="mb-3">
+            <label for="almacen" class="form-label" th:text="#{msg.pasillo.form.almacen}">Almacén:</label>
+            <select th:field="*{almacen.id}" id="almacen" class="form-select">
+
+                <!-- Opción inicial para no seleccionar ningún almacén. -->
+                <option value="" th:text="#{msg.pasillo.form.almacen.select}"></option>
+
+                <!-- Si el almacén tiene nombre, usa ${almacen.nombre} como texto -->
+                <!-- Recorre la lista de almacenes recibida desde el controlador
+                     y muestra su identificador como opción del desplegable. -->
+                <option th:each="almacen : ${listAlmacenes}"
+                        th:value="${almacen.id}"
+                        th:text="${almacen.id}"></option>
+            </select>
+
+            <!-- Muestra los errores de validación del almacén seleccionado. -->
+            <div th:if="${#fields.hasErrors('almacen.id')}" class="text-danger" th:errors="*{almacen.id}"></div>
+        </div>
+
+        <!-- Botón para enviar el formulario.
+             Su texto cambia dependiendo de si se crea o actualiza el pasillo. -->
+        <button type="submit"
+                class="btn btn-primary"
+                th:text="${pasillo.id == null} ? #{msg.pasillo.form.create} : #{msg.pasillo.form.update}">
+        </button>
+
+    </form>
+
+    <!-- Enlace para volver a la lista de pasillos sin enviar el formulario. -->
+    <a th:href="@{/pasillos}" class="btn btn-secondary mt-3"
+       th:text="#{msg.pasillo.form.back}">Volver a la lista</a>
+
+</main>
+
+<!-- Pie de página común de la aplicación. -->
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

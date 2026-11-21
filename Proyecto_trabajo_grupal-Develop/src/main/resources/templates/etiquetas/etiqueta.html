@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/head :: head (#{msg.etiqueta.list.title})"></head>
+
+<body>
+
+<!-- Cabecera común de la aplicación. -->
+<header th:replace="fragments/header :: header"></header>
+
+<!-- Contenido principal de la página. -->
+<main class="container mt-5">
+
+    <!-- Título de la página. -->
+    <h1 th:text="#{msg.etiqueta.list.heading}">Etiquetas de producto</h1>
+
+    <!-- Muestra un mensaje de error si existe alguno. -->
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <!-- Tabla que muestra las etiquetas registradas. -->
+    <table class="table table-bordered mt-3">
+        <thead>
+        <tr>
+            <!-- Columnas de la tabla con textos traducibles. -->
+            <th th:text="#{msg.etiqueta.table.id}">ID</th>
+            <th th:text="#{msg.etiqueta.table.codigoBarras}">Código de barras</th>
+            <th th:text="#{msg.etiqueta.table.caja}">Caja</th>
+            <th th:text="#{msg.etiqueta.table.actions}">Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <!-- Recorre la lista de etiquetas recibida desde el controlador. -->
+        <tr th:each="etiqueta : ${listEtiquetas}">
+            <!-- Muestra los datos de cada etiqueta. -->
+            <td th:text="${etiqueta.id}"></td>
+            <td th:text="${etiqueta.codigoBarras}"></td>
+
+            <!-- Muestra el ID y el contenido de la caja a la que pertenece la etiqueta. -->
+            <td th:text="${etiqueta.caja.id + ' - ' + etiqueta.caja.contenido}"></td>
+
+            <td>
+                <!-- Enlace para editar la etiqueta seleccionada, enviando su ID. -->
+                <a th:href="@{/etiquetas/edit(id=${etiqueta.id})}"
+                   class="btn btn-primary btn-sm"
+                   th:text="#{msg.etiqueta.button.edit}">Editar</a>
+
+                <!-- Formulario para eliminar la etiqueta mediante su ID. -->
+                <form th:action="@{/etiquetas/delete}" method="post" class="d-inline">
+                    <input type="hidden" name="id" th:value="${etiqueta.id}"/>
+
+                    <!-- Botón que solicita confirmación antes de eliminar la etiqueta. -->
+                    <button type="submit"
+                            class="btn btn-danger btn-sm"
+                            th:onclick="|return confirm('#{msg.etiqueta.delete.confirm}');|"
+                            th:text="#{msg.etiqueta.button.delete}">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Enlace para acceder al formulario de creación de una etiqueta. -->
+    <a th:href="@{/etiquetas/new}" class="btn btn-success mt-3"
+       th:text="#{msg.etiqueta.button.add}">Añadir etiqueta</a>
+
+    <!-- Enlace para volver a la página principal de la aplicación. -->
+    <a th:href="@{/}" class="btn btn-secondary mt-3"
+       th:text="#{msg.etiqueta.button.back}">Volver al inicio</a>
+
+</main>
+
+<!-- Pie de página común de la aplicación. -->
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>
