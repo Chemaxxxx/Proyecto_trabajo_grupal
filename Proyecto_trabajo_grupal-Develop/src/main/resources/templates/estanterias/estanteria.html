@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/head :: head (#{msg.estanteria.list.title})"></head>
+
+<body>
+
+<!-- Cabecera común de la aplicación. -->
+<header th:replace="fragments/header :: header"></header>
+
+<!-- Contenido principal de la página. -->
+<main class="container mt-5">
+
+    <!-- Título de la página. -->
+    <h1 th:text="#{msg.estanteria.list.heading}">Estanterías</h1>
+
+    <!-- Muestra un mensaje de error si existe alguno. -->
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <!-- Tabla que muestra las estanterías registradas. -->
+    <table class="table table-bordered mt-3">
+        <thead>
+        <tr>
+            <!-- Columnas de la tabla con textos traducibles. -->
+            <th th:text="#{msg.estanteria.table.id}">ID</th>
+            <th th:text="#{msg.estanteria.table.material}">Material</th>
+            <th th:text="#{msg.estanteria.table.lleno}">Llena</th>
+            <th th:text="#{msg.estanteria.table.pasillo}">Pasillo</th>
+            <th th:text="#{msg.estanteria.table.actions}">Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <!-- Recorre la lista de estanterías recibida desde el controlador. -->
+        <tr th:each="estanteria : ${listEstanterias}">
+            <!-- Muestra los datos de cada estantería. -->
+            <td th:text="${estanteria.id}"></td>
+            <td th:text="${estanteria.material}"></td>
+
+            <!-- Muestra Sí o No dependiendo de si la estantería está llena. -->
+            <td th:text="${estanteria.lleno} ? #{msg.estanteria.yes} : #{msg.estanteria.no}"></td>
+
+            <!-- Muestra el número del pasillo al que pertenece la estantería. -->
+            <td th:text="${estanteria.pasillo.numero}"></td>
+
+            <td>
+                <!-- Enlace para editar la estantería seleccionada, enviando su ID. -->
+                <a th:href="@{/estanterias/edit(id=${estanteria.id})}"
+                   class="btn btn-primary btn-sm"
+                   th:text="#{msg.estanteria.button.edit}">Editar</a>
+
+                <!-- Formulario para eliminar la estantería mediante su ID. -->
+                <form th:action="@{/estanterias/delete}" method="post" class="d-inline">
+                    <input type="hidden" name="id" th:value="${estanteria.id}"/>
+
+                    <!-- Botón que solicita confirmación antes de eliminar la estantería. -->
+                    <button type="submit"
+                            class="btn btn-danger btn-sm"
+                            th:onclick="|return confirm('#{msg.estanteria.delete.confirm}');|"
+                            th:text="#{msg.estanteria.button.delete}">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Enlace para acceder al formulario de creación de una estantería. -->
+    <a th:href="@{/estanterias/new}" class="btn btn-success mt-3"
+       th:text="#{msg.estanteria.button.add}">Añadir estantería</a>
+
+    <!-- Enlace para volver a la página principal de la aplicación. -->
+    <a th:href="@{/}" class="btn btn-secondary mt-3"
+       th:text="#{msg.estanteria.button.back}">Volver al inicio</a>
+
+</main>
+
+<!-- Pie de página común de la aplicación. -->
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

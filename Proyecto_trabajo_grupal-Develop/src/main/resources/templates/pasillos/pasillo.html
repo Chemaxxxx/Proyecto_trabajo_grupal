@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- Carga la cabecera común y establece el título de la página. -->
+<head th:replace="fragments/head :: head (#{msg.pasillo.list.title})"></head>
+
+<body>
+
+<!-- Cabecera común de la aplicación. -->
+<header th:replace="fragments/header :: header"></header>
+
+<!-- Contenido principal de la página. -->
+<main class="container mt-5">
+
+    <!-- Título de la página donde se muestra el listado de pasillos. -->
+    <h1 th:text="#{msg.pasillo.list.heading}">Pasillos</h1>
+
+    <!-- Muestra un mensaje de error si existe alguno. -->
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <!-- Tabla que muestra los pasillos registrados. -->
+    <table class="table table-bordered mt-3">
+        <thead>
+        <tr>
+            <!-- Columnas que indican los datos que se muestran de cada pasillo. -->
+            <th th:text="#{msg.pasillo.table.id}">ID</th>
+            <th th:text="#{msg.pasillo.table.numero}">Número</th>
+            <th th:text="#{msg.pasillo.table.almacen}">Almacén</th>
+            <th th:text="#{msg.pasillo.table.actions}">Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <!-- Recorre la lista de pasillos recibida desde el controlador. -->
+        <tr th:each="pasillo : ${listPasillos}">
+            <!-- Muestra el identificador y el número de cada pasillo. -->
+            <td th:text="${pasillo.id}"></td>
+            <td th:text="${pasillo.numero}"></td>
+
+            <!-- Si el almacén tiene nombre, usa ${pasillo.almacen.nombre} -->
+            <!-- Muestra el identificador del almacén al que pertenece el pasillo. -->
+            <td th:text="${pasillo.almacen.id}"></td>
+
+            <td>
+                <!-- Enlace para acceder al formulario de edición del pasillo seleccionado. -->
+                <a th:href="@{/pasillos/edit(id=${pasillo.id})}"
+                   class="btn btn-primary btn-sm"
+                   th:text="#{msg.pasillo.button.edit}">Editar</a>
+
+                <!-- Formulario para eliminar el pasillo mediante una petición POST. -->
+                <form th:action="@{/pasillos/delete}" method="post" class="d-inline">
+
+                    <!-- Campo oculto que envía el ID del pasillo que se quiere eliminar. -->
+                    <input type="hidden" name="id" th:value="${pasillo.id}"/>
+
+                    <!-- Botón para eliminar el pasillo, mostrando antes un mensaje de confirmación. -->
+                    <button type="submit"
+                            class="btn btn-danger btn-sm"
+                            th:onclick="|return confirm('#{msg.pasillo.delete.confirm}');|"
+                            th:text="#{msg.pasillo.button.delete}">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Enlace para abrir el formulario de creación de un nuevo pasillo. -->
+    <a th:href="@{/pasillos/new}" class="btn btn-success mt-3"
+       th:text="#{msg.pasillo.button.add}">Añadir pasillo</a>
+
+    <!-- Enlace para volver a la página principal de la aplicación. -->
+    <a th:href="@{/}" class="btn btn-secondary mt-3"
+       th:text="#{msg.pasillo.button.back}">Volver al inicio</a>
+
+</main>
+
+<!-- Pie de página común de la aplicación. -->
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- Carga la cabecera común y establece el título de la página. -->
+<head th:replace="fragments/head :: head (#{msg.estanteria.form.title})"></head>
+
+<body>
+
+<!-- Cabecera común de la aplicación. -->
+<header th:replace="fragments/header :: header"></header>
+
+<!-- Contenido principal de la página. -->
+<main class="container mt-5">
+
+    <!-- Muestra un título diferente dependiendo de si se crea o edita una estantería. -->
+    <h1 th:text="${estanteria.id == null} ? #{msg.estanteria.form.add} : #{msg.estanteria.form.edit}"></h1>
+
+    <!-- Muestra un mensaje de error si existe alguno. -->
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <!-- Formulario para crear o actualizar una estantería.
+         La dirección cambia dependiendo de si la estantería tiene ID. -->
+    <form th:action="${estanteria.id == null} ? @{/estanterias/insert} : @{/estanterias/update}"
+          th:object="${estanteria}"
+          method="post"
+          class="mt-4">
+
+        <!-- Campo oculto para conservar el identificador de la estantería al editarla. -->
+        <input type="hidden" th:field="*{id}" />
+
+        <!-- Campo para introducir el material de la estantería. -->
+        <div class="mb-3">
+            <label for="material" class="form-label" th:text="#{msg.estanteria.form.material}">Material:</label>
+            <input type="text" th:field="*{material}" id="material" class="form-control" />
+
+            <!-- Muestra los errores de validación del campo material. -->
+            <div th:if="${#fields.hasErrors('material')}" class="text-danger" th:errors="*{material}"></div>
+        </div>
+
+        <!-- Casilla para indicar si la estantería está llena. -->
+        <div class="form-check mb-3">
+            <input type="checkbox" th:field="*{lleno}" id="lleno" class="form-check-input" />
+            <label for="lleno" class="form-check-label" th:text="#{msg.estanteria.form.lleno}">Llena</label>
+        </div>
+
+        <!-- Desplegable para seleccionar el pasillo al que pertenece la estantería. -->
+        <div class="mb-3">
+            <label for="pasillo" class="form-label" th:text="#{msg.estanteria.form.pasillo}">Pasillo:</label>
+            <select th:field="*{pasillo.id}" id="pasillo" class="form-select">
+
+                <!-- Opción inicial para no seleccionar ningún pasillo. -->
+                <option value="" th:text="#{msg.estanteria.form.pasillo.select}"></option>
+
+                <!-- Recorre la lista de pasillos recibida desde el controlador
+                     y muestra su número como opción del desplegable. -->
+                <option th:each="pasillo : ${listPasillos}"
+                        th:value="${pasillo.id}"
+                        th:text="${pasillo.numero}"></option>
+            </select>
+
+            <!-- Muestra los errores de validación del pasillo seleccionado. -->
+            <div th:if="${#fields.hasErrors('pasillo.id')}" class="text-danger" th:errors="*{pasillo.id}"></div>
+        </div>
+
+        <!-- Botón para enviar el formulario.
+             Su texto cambia dependiendo de si se crea o actualiza la estantería. -->
+        <button type="submit"
+                class="btn btn-primary"
+                th:text="${estanteria.id == null} ? #{msg.estanteria.form.create} : #{msg.estanteria.form.update}">
+        </button>
+
+    </form>
+
+    <!-- Enlace para volver a la lista de estanterías sin enviar el formulario. -->
+    <a th:href="@{/estanterias}" class="btn btn-secondary mt-3"
+       th:text="#{msg.estanteria.form.back}">Volver a la lista</a>
+
+</main>
+
+<!-- Pie de página común de la aplicación. -->
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>
