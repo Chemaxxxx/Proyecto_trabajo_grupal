@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/head :: head (#{msg.caja.list.title})"></head>
+
+<body>
+
+<!-- Cabecera común de la aplicación. -->
+<header th:replace="fragments/header :: header"></header>
+
+<!-- Contenido principal de la página. -->
+<main class="container mt-5">
+
+    <!-- Título de la página. -->
+    <h1 th:text="#{msg.caja.list.heading}">Cajas</h1>
+
+    <!-- Muestra un mensaje de error si existe alguno. -->
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <!-- Tabla que muestra las cajas registradas. -->
+    <table class="table table-bordered mt-3">
+        <thead>
+        <tr>
+            <!-- Columnas de la tabla con textos traducibles. -->
+            <th th:text="#{msg.caja.table.id}">ID</th>
+            <th th:text="#{msg.caja.table.peso}">Peso (kg)</th>
+            <th th:text="#{msg.caja.table.contenido}">Contenido</th>
+            <th th:text="#{msg.caja.table.estanteria}">Estantería</th>
+            <th th:text="#{msg.caja.table.etiqueta}">Etiqueta</th>
+            <th th:text="#{msg.caja.table.actions}">Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <!-- Recorre la lista de cajas recibida desde el controlador. -->
+        <tr th:each="caja : ${listCajas}">
+            <!-- Muestra los datos de cada caja. -->
+            <td th:text="${caja.id}"></td>
+            <td th:text="${caja.peso}"></td>
+            <td th:text="${caja.contenido}"></td>
+
+            <!-- Muestra el material de la estantería en la que está la caja. -->
+            <td th:text="${caja.estanteria.material}"></td>
+
+            <!-- Muestra el código de barras de la etiqueta o un texto si no tiene. -->
+            <td th:text="${caja.etiquetaProducto != null} ? ${caja.etiquetaProducto.codigoBarras} : #{msg.caja.noEtiqueta}"></td>
+
+            <td>
+                <!-- Enlace para editar la caja seleccionada, enviando su ID. -->
+                <a th:href="@{/cajas/edit(id=${caja.id})}"
+                   class="btn btn-primary btn-sm"
+                   th:text="#{msg.caja.button.edit}">Editar</a>
+
+                <!-- Formulario para eliminar la caja mediante su ID. -->
+                <form th:action="@{/cajas/delete}" method="post" class="d-inline">
+                    <input type="hidden" name="id" th:value="${caja.id}"/>
+
+                    <!-- Botón que solicita confirmación antes de eliminar la caja. -->
+                    <button type="submit"
+                            class="btn btn-danger btn-sm"
+                            th:onclick="|return confirm('#{msg.caja.delete.confirm}');|"
+                            th:text="#{msg.caja.button.delete}">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Enlace para acceder al formulario de creación de una caja. -->
+    <a th:href="@{/cajas/new}" class="btn btn-success mt-3"
+       th:text="#{msg.caja.button.add}">Añadir caja</a>
+
+    <!-- Enlace para volver a la página principal de la aplicación. -->
+    <a th:href="@{/}" class="btn btn-secondary mt-3"
+       th:text="#{msg.caja.button.back}">Volver al inicio</a>
+
+</main>
+
+<!-- Pie de página común de la aplicación. -->
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>
