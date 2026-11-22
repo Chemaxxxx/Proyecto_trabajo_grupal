@@ -1,13 +1,43 @@
+CREATE TABLE IF NOT EXISTS almacenes (
+id INT AUTO_INCREMENT PRIMARY KEY,
+ciudad VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS licencias_almacen (
+id INT AUTO_INCREMENT PRIMARY KEY,
+dia_matriculacion DATE NOT NULL,
+imagen VARCHAR(255) NOT NULL,
+almacen_id INT NOT NULL UNIQUE,
+FOREIGN KEY (almacen_id) REFERENCES almacenes(id)
+);
+
 CREATE TABLE IF NOT EXISTS pasillos (
 id INT AUTO_INCREMENT PRIMARY KEY,
 numero INT NOT NULL UNIQUE,
-almacen_id INT NOT NULL
+almacen_id INT NOT NULL,
+FOREIGN KEY (almacen_id) REFERENCES almacenes(id)
 );
 
 CREATE TABLE IF NOT EXISTS estanterias (
 id INT AUTO_INCREMENT PRIMARY KEY,
 material VARCHAR(100) NOT NULL,
 lleno BOOLEAN NOT NULL DEFAULT FALSE,
-pasillo_id BIGINT NOT NULL,
+pasillo_id INT NOT NULL,
 FOREIGN KEY (pasillo_id) REFERENCES pasillos(id)
+    );
+
+
+CREATE TABLE IF NOT EXISTS cajas (
+id INT AUTO_INCREMENT PRIMARY KEY,
+peso DOUBLE NOT NULL,
+contenido VARCHAR(255) NOT NULL,
+estanteria_id INT NOT NULL,
+FOREIGN KEY (estanteria_id) REFERENCES estanterias(id)
+    );
+
+CREATE TABLE IF NOT EXISTS etiquetas_producto (
+id INT AUTO_INCREMENT PRIMARY KEY,
+codigo_barras VARCHAR(14) NOT NULL UNIQUE,
+caja_id INT NOT NULL UNIQUE,
+FOREIGN KEY (caja_id) REFERENCES cajas(id)
     );

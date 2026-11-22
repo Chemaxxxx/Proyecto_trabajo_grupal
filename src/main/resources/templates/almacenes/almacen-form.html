@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- Carga la cabecera común y establece el título de la página. -->
+<head th:replace="fragments/head :: head (#{msg.almacen.form.title})"></head>
+
+<body>
+
+<!-- Cabecera común de la aplicación. -->
+<header th:replace="fragments/header :: header"></header>
+
+<!-- Contenido principal de la página. -->
+<main class="container mt-5">
+
+    <!-- Muestra un título diferente dependiendo de si se crea o edita un almacén. -->
+    <h1 th:text="${almacen.id == null} ? #{msg.almacen.form.add} : #{msg.almacen.form.edit}"></h1>
+
+    <!-- Muestra un mensaje de error si existe alguno. -->
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <!-- Formulario para crear o actualizar un almacén.
+         La dirección cambia dependiendo de si el almacén tiene ID. -->
+    <form th:action="${almacen.id == null} ? @{/almacenes/insert} : @{/almacenes/update}"
+          th:object="${almacen}"
+          method="post"
+          class="mt-4">
+
+        <!-- Campo oculto para conservar el identificador del almacén al editarlo. -->
+        <input type="hidden" th:field="*{id}" />
+
+        <!-- Campo para introducir la ciudad del almacén. -->
+        <div class="mb-3">
+            <label for="ciudad" class="form-label" th:text="#{msg.almacen.form.ciudad}">Ciudad:</label>
+            <input type="text" th:field="*{ciudad}" id="ciudad" class="form-control" />
+
+            <!-- Muestra los errores de validación de la ciudad del almacén. -->
+            <div th:if="${#fields.hasErrors('ciudad')}" class="text-danger" th:errors="*{ciudad}"></div>
+        </div>
+
+        <!-- Botón para enviar el formulario.
+             Su texto cambia dependiendo de si se crea o actualiza el almacén. -->
+        <button type="submit"
+                class="btn btn-primary"
+                th:text="${almacen.id == null} ? #{msg.almacen.form.create} : #{msg.almacen.form.update}">
+        </button>
+
+    </form>
+
+    <!-- Enlace para volver a la lista de almacenes sin enviar el formulario. -->
+    <a th:href="@{/almacenes}" class="btn btn-secondary mt-3"
+       th:text="#{msg.almacen.form.back}">Volver a la lista</a>
+
+</main>
+
+<!-- Pie de página común de la aplicación. -->
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

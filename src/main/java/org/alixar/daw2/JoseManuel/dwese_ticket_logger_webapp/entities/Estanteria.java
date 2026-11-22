@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.List;
+
 /**
  * Una estantería pertenece a un pasillo y contiene varias cajas.
  * Representa una estantería dentro del almacén.

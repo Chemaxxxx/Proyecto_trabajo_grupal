@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- Carga la cabecera común y establece el título de la página. -->
+<head th:replace="fragments/head :: head (#{msg.licencia.list.title})"></head>
+
+<body>
+
+<!-- Cabecera común de la aplicación. -->
+<header th:replace="fragments/header :: header"></header>
+
+<!-- Contenido principal de la página. -->
+<main class="container mt-5">
+
+    <!-- Título de la página donde se muestra el listado de licencias. -->
+    <h1 th:text="#{msg.licencia.list.heading}">Licencias de almacén</h1>
+
+    <!-- Muestra un mensaje de error si existe alguno. -->
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <!-- Tabla que muestra las licencias registradas. -->
+    <table class="table table-bordered mt-3">
+        <thead>
+        <tr>
+            <!-- Columnas de la tabla con textos traducibles. -->
+            <th th:text="#{msg.licencia.table.id}">ID</th>
+            <th th:text="#{msg.licencia.table.diaMatriculacion}">Día de matriculación</th>
+            <th th:text="#{msg.licencia.table.imagen}">Imagen</th>
+            <th th:text="#{msg.licencia.table.almacen}">Almacén</th>
+            <th th:text="#{msg.licencia.table.actions}">Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <!-- Recorre la lista de licencias recibida desde el controlador. -->
+        <tr th:each="licencia : ${listLicencias}">
+            <!-- Muestra los datos de cada licencia. -->
+            <td th:text="${licencia.id}"></td>
+            <td th:text="${licencia.diaMatriculacion}"></td>
+
+            <!-- Muestra la imagen de la licencia. -->
+            <td>
+                <img th:if="${licencia.imagen != null and !#strings.isEmpty(licencia.imagen)}"
+                     th:src="@{'/uploads/' + ${licencia.imagen}}"
+                     th:alt="${licencia.imagen}"
+                     style="max-height: 60px;" />
+            </td>
+
+            <!-- Muestra el ID y la ciudad del almacén al que pertenece la licencia. -->
+            <td th:text="${licencia.almacen.id + ' - ' + licencia.almacen.ciudad}"></td>
+
+            <td>
+                <!-- Enlace para editar la licencia seleccionada, enviando su ID. -->
+                <a th:href="@{/licencias/edit(id=${licencia.id})}"
+                   class="btn btn-primary btn-sm"
+                   th:text="#{msg.licencia.button.edit}">Editar</a>
+
+                <!-- Formulario para eliminar la licencia mediante su ID. -->
+                <form th:action="@{/licencias/delete}" method="post" class="d-inline">
+                    <input type="hidden" name="id" th:value="${licencia.id}"/>
+
+                    <!-- Botón que solicita confirmación antes de eliminar la licencia. -->
+                    <button type="submit"
+                            class="btn btn-danger btn-sm"
+                            th:onclick="|return confirm('#{msg.licencia.delete.confirm}');|"
+                            th:text="#{msg.licencia.button.delete}">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Enlace para acceder al formulario de creación de una licencia. -->
+    <a th:href="@{/licencias/new}" class="btn btn-success mt-3"
+       th:text="#{msg.licencia.button.add}">Añadir licencia</a>
+
+    <!-- Enlace para volver a la página principal de la aplicación. -->
+    <a th:href="@{/}" class="btn btn-secondary mt-3"
+       th:text="#{msg.licencia.button.back}">Volver al inicio</a>
+
+</main>
+
+<!-- Pie de página común de la aplicación. -->
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>
