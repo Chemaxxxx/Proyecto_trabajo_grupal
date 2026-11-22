@@ -1,9 +1,7 @@
 package org.alixar.daw2.JoseManuel.dwese_ticket_logger_webapp.controllers;
 
 import jakarta.validation.Valid;
-import org.alixar.daw2.JoseManuel.dwese_ticket_logger_webapp.entities.Almacen;
 import org.alixar.daw2.JoseManuel.dwese_ticket_logger_webapp.entities.Pasillo;
-import org.alixar.daw2.JoseManuel.dwese_ticket_logger_webapp.repositories.AlmacenRepository;
 import org.alixar.daw2.JoseManuel.dwese_ticket_logger_webapp.repositories.PasilloRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,6 +77,7 @@ public class PasilloController {
      * Inicializa un objeto Pasillo y prepara el almacén para
      * poder seleccionar uno en el formulario.
      *
+     * @param id identificador recibido como parámetro
      * @param model modelo utilizado para enviar los datos a la vista
      * @param redirectAttributes atributos utilizados para enviar mensajes
      *                           durante las redirecciones
@@ -86,7 +85,7 @@ public class PasilloController {
      * @return nombre de la vista del formulario de pasillos
      */
     @GetMapping("/new")
-    public String showNewForm(Model model, RedirectAttributes redirectAttributes,
+    public String showNewForm(@RequestParam("id") Long id, Model model, RedirectAttributes redirectAttributes,
                               Locale locale){
         logger.info("Mostrando formulario para nuevo pasillo.");
 

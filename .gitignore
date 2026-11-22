@@ -37,8 +37,3 @@ build/
 
 ### Mac OS ###
 .DS_Store
-
-### Local & Uploads ###
-.env
-uploads/
-.idea/
